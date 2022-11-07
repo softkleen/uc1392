@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 @import url('reset.css');
 html{
+    margin-left: 10px;
     font-family: 'Raleway', sans-serif;
 }
 h1{
@@ -23,4 +24,20 @@ div{
 }
 #nome-empresa{
     color: brown;   
+}
+.tabelinha th, td{
+    border: 0.5px solid rgb(78, 78, 78);
+}
+.tabelinha th, td{
+ padding:10px;
+}
+.tabelinha{
+    border: 2px solid;
+}
+th{
+    font-weight: 700;
+}
+input{margin-bottom: 10px;}
+#btn-enviar{
+    margin-bottom: 20px;
 }
