@@ -14,7 +14,7 @@ print_r($_POST);
     $data = date('d/m/Y');
     $dias = 30;
     for ($i=0; $i < $parcela; $i++) { 
-        $parcelas += ([($i+1),($coeficiente*floatval($capital)),date($data,strtotime('+30days'))]);    
+        $parcelas[$i] = [($i+1),($coeficiente*floatval($capital)),date($data,strtotime('+30days'))];    
         $dias += 30; 
     }
     print_r($parcelas);
