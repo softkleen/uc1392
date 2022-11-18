@@ -1,7 +1,7 @@
 <?php 
 include 'conecta.php';
 // criando consulta SQL 
-$consultaSql = "SELECT * FROM cliente where deleted is null order by nome, cod_cliente asc";
+$consultaSql = "SELECT * FROM cliente where deleted is null order by nome, cpf asc";
 $consultaSqlArq = "SELECT * FROM cliente where deleted is not null order by nome, cod_cliente asc";
 
 // buscando e listando os dados da tabela (completa)
@@ -13,6 +13,7 @@ $row = $lista->fetch();
 $rowArq = $listaArq->fetch();
 // retornando o númaru de linhas
 $num_rows = $lista->rowCount();
+$num_rows_arq = $listaArq->rowCount();
 
 // busca cliente por código
 $nome = "";
@@ -117,13 +118,17 @@ if (isset($_POST['alterar']))
     <h3>Clientes Ativos</h3>
     <table>
         <thead>
+        <?php
+            if($num_rows > 0){ ?>
             <th hidden>Cod</th>
             <th>Nome</th>
             <th>CPF</th>
             <th colspan="2">Ações</th>
         </thead>
         <tbody>
-            <?php do {?>
+            <?php
+           
+            do {?>
                 <tr>
                     <td hidden><?php echo $row['cod_cliente'];?></td>
                     <td><?php echo $row['nome'];?></td>
@@ -132,12 +137,18 @@ if (isset($_POST['alterar']))
                     <td><a href="cliente.php?codarq=<?php echo $row['cod_cliente'];?>">Arquivar</a></td>
                 
                 </tr>
-            <?php } while ($row = $lista->fetch())?>
+            <?php } while ($row = $lista->fetch());
+            }else{
+                echo "<tr><td colspan=5>Não há clientes Cadastrados</td></tr>";
+            }
+            ?>
         </tbody>
     </table>
     <h3>Clientes Arquivados</h3>
     <table>
         <thead>
+        <?php 
+             if($num_rows_arq > 0){ ?>
             <th hidden>Cod</th>
             <th>Nome</th>
             <th>CPF</th>
@@ -145,7 +156,9 @@ if (isset($_POST['alterar']))
             <th colspan="2" >Ações</th>
         </thead>
         <tbody>
-            <?php do {?>
+            <?php 
+            
+            do {?>
                 <tr>
                     <td hidden><?php echo $rowArq['cod_cliente'];?></td>
                     <td><?php echo $rowArq['nome'];?></td>
@@ -155,7 +168,10 @@ if (isset($_POST['alterar']))
                     <td><a href="cliente.php?codexc=<?php echo $rowArq['cod_cliente'];?>">Excluir</a></td>
                 
                 </tr>
-            <?php } while ($rowArq = $listaArq->fetch())?>
+            <?php } while ($rowArq = $listaArq->fetch());
+            }else{
+                echo "<tr><td colspan=5>Não há clientes arquivados</td></tr>";
+            }?>
         </tbody>
     </table>
 </body>
