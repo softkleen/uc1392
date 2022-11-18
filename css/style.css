@@ -16,9 +16,7 @@ h3{
     font-weight: 400;
     font-size: 1.6em;
 }
-div{
-    border: 3px solid rgb(242, 48, 236);
-}
+
 .container{
     background-color: lightgray;
 }
@@ -40,4 +38,8 @@ th{
 input{margin-bottom: 10px;}
 #btn-enviar{
     margin-bottom: 20px;
+}
+.formulario{
+    background-color: rgb(200, 232, 169);
+    padding: 15px;
 }
