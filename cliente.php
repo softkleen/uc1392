@@ -1,11 +1,16 @@
 <?php 
 include 'conecta.php';
 // criando consulta SQL 
-$consultaSql = "SELECT * FROM cliente order by nome, cod_cliente asc";
+$consultaSql = "SELECT * FROM cliente where deleted is null order by nome, cod_cliente asc";
+$consultaSqlArq = "SELECT * FROM cliente where deleted is not null order by nome, cod_cliente asc";
+
 // buscando e listando os dados da tabela (completa)
 $lista = $pdo->query($consultaSql);
+$listaArq = $pdo->query($consultaSqlArq);
+
 // separar em linhas
 $row = $lista->fetch();
+$rowArq = $listaArq->fetch();
 // retornando o númaru de linhas
 $num_rows = $lista->rowCount();
 
@@ -22,10 +27,28 @@ if (isset($_GET['codedit']))
     $cpf = $cliente['cpf'];
 
 }
-// codigo para excluir
-if (isset($_GET['codexc']))
+// comando para incluir campo deleted na tabela cliente
+// alter table cliente add deleted datetime null;
+
+// codigo para arquivar(excluir)
+if (isset($_GET['codarq']))
 {
-   $queryExc = "delete FROM cliente where cod_cliente=".$_GET['codexc'];
+   $queryArq = "update cliente set deleted = now() where cod_cliente=".$_GET['codarq'];
+    $cliente = $pdo->query($queryArq)->fetch();
+    header('location: cliente.php');
+}
+
+// restaurar o cliente
+if (isset($_GET['codres']))
+{
+   $queryArq = "update cliente set deleted = null where cod_cliente=".$_GET['codres'];
+    $cliente = $pdo->query($queryArq)->fetch();
+    header('location: cliente.php');
+}
+ // remover definitivamente (LGPD)
+ if (isset($_GET['codexc']))
+{
+   $queryExc = "delete from cliente where cod_cliente=".$_GET['codexc'];
     $cliente = $pdo->query($queryExc)->fetch();
     header('location: cliente.php');
 }
@@ -91,12 +114,13 @@ if (isset($_POST['alterar']))
             </div>
         </form>
     </section>
+    <h3>Clientes Ativos</h3>
     <table>
         <thead>
             <th hidden>Cod</th>
             <th>Nome</th>
             <th>CPF</th>
-            <th colspan="3">Ações</th>
+            <th colspan="2">Ações</th>
         </thead>
         <tbody>
             <?php do {?>
@@ -106,9 +130,32 @@ if (isset($_POST['alterar']))
                     <td><?php echo $row['cpf'];?></td>
                     <td><a href="cliente.php?codedit=<?php echo $row['cod_cliente'];?>">Editar</a></td>
                     <td><a href="cliente.php?codarq=<?php echo $row['cod_cliente'];?>">Arquivar</a></td>
-                    <td><a href="cliente.php?codexc=<?php echo $row['cod_cliente'];?>">Excluir</a></td>
+                
                 </tr>
             <?php } while ($row = $lista->fetch())?>
+        </tbody>
+    </table>
+    <h3>Clientes Arquivados</h3>
+    <table>
+        <thead>
+            <th hidden>Cod</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Arquivado em</th>
+            <th colspan="2" >Ações</th>
+        </thead>
+        <tbody>
+            <?php do {?>
+                <tr>
+                    <td hidden><?php echo $rowArq['cod_cliente'];?></td>
+                    <td><?php echo $rowArq['nome'];?></td>
+                    <td><?php echo $rowArq['cpf'];?></td>
+                    <td><?php echo $rowArq['deleted'];?></td>
+                    <td><a href="cliente.php?codres=<?php echo $rowArq['cod_cliente'];?>">Restaurar</a></td>
+                    <td><a href="cliente.php?codexc=<?php echo $rowArq['cod_cliente'];?>">Excluir</a></td>
+                
+                </tr>
+            <?php } while ($rowArq = $listaArq->fetch())?>
         </tbody>
     </table>
 </body>
