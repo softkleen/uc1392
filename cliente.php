@@ -7,10 +7,11 @@ $consultaSqlArq = "SELECT * FROM cliente where deleted is not null order by nome
 // buscando e listando os dados da tabela (completa)
 $lista = $pdo->query($consultaSql);
 $listaArq = $pdo->query($consultaSqlArq);
-
+$listaClass = $pdo->query("select cod_classificacao as id, classificacoes as class from classificacao");
 // separar em linhas
 $row = $lista->fetch();
 $rowArq = $listaArq->fetch();
+$rowClass = $listaClass->fetch();
 // retornando o númaru de linhas
 $num_rows = $lista->rowCount();
 $num_rows_arq = $listaArq->rowCount();
@@ -211,6 +212,17 @@ if (isset($_POST['alterar'])) {
                             <label for="cpf">
                                 CPF
                                 <input class="form-control" type="number" name="cpf" required value="<?php echo $cpf; ?>">
+                            </label>
+                        </div>
+
+                        <div>
+                            <label for="Classificacao">
+                                Classificação
+                                <select name="class" id="">
+                                    <?php do { ?>
+                                    <option value="<?php echo $rowClass['id']?>"><?php echo $rowClass['class']?></option>
+                                    <?php } while($rowClass = $listaClass->fetch());?>
+                                </select>
                             </label>
                         </div>
                         <div class="mb-3">

@@ -7,6 +7,7 @@ $consulta = "select * from filme funcionario where demissao is null";
 // trazer as lista completa dos dados
 $lista = $pdo->query($consulta);
 
+
 // separar os dados em linhas
 $linha = $lista->fetch();
 $num_linhas = $lista->rowCount();
