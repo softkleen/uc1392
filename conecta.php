@@ -17,4 +17,13 @@ try {
 }
 
 
+/*
+create table cliente(
+id int primary key auto_increment,
+nome varchar(100) not null,
+cpf char(14) not null unique,
+deleted timestamp null default current_timestamp
+);
+*/
+
 ?>

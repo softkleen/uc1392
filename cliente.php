@@ -2,16 +2,14 @@
 include 'conecta.php';
 // criando consulta SQL 
 $consultaSql = "SELECT * FROM cliente where deleted is null order by nome, cpf asc";
-$consultaSqlArq = "SELECT * FROM cliente where deleted is not null order by nome, cod_cliente asc";
+$consultaSqlArq = "SELECT * FROM cliente where deleted is not null order by nome, id asc";
 
 // buscando e listando os dados da tabela (completa)
 $lista = $pdo->query($consultaSql);
 $listaArq = $pdo->query($consultaSqlArq);
-$listaClass = $pdo->query("select cod_classificacao as id, classificacoes as class from classificacao");
 // separar em linhas
 $row = $lista->fetch();
 $rowArq = $listaArq->fetch();
-$rowClass = $listaClass->fetch();
 // retornando o númaru de linhas
 $num_rows = $lista->rowCount();
 $num_rows_arq = $listaArq->rowCount();
@@ -21,7 +19,7 @@ $nome = "";
 $cpf = "";
 $cod = 0;
 if (isset($_GET['codedit'])) {
-    $queryEdit = "SELECT * FROM cliente where cod_cliente=" . $_GET['codedit'];
+    $queryEdit = "SELECT * FROM cliente where id=" . $_GET['codedit'];
     $cliente = $pdo->query($queryEdit)->fetch();
     $cod = $_GET['codedit'];
     $nome = $cliente['nome'];
@@ -32,20 +30,20 @@ if (isset($_GET['codedit'])) {
 
 // codigo para arquivar(excluir)
 if (isset($_GET['codarq'])) {
-    $queryArq = "update cliente set deleted = now() where cod_cliente=" . $_GET['codarq'];
+    $queryArq = "update cliente set deleted = now() where id=" . $_GET['codarq'];
     $cliente = $pdo->query($queryArq)->fetch();
     header('location: cliente.php');
 }
 
 // restaurar o cliente
 if (isset($_GET['codres'])) {
-    $queryArq = "update cliente set deleted = null where cod_cliente=" . $_GET['codres'];
+    $queryArq = "update cliente set deleted = null where id=" . $_GET['codres'];
     $cliente = $pdo->query($queryArq)->fetch();
     header('location: cliente.php');
 }
 // remover definitivamente (LGPD)
 if (isset($_GET['codexc'])) {
-    $queryExc = "delete from cliente where cod_cliente=" . $_GET['codexc'];
+    $queryExc = "delete from cliente where id=" . $_GET['codexc'];
     $cliente = $pdo->query($queryExc)->fetch();
     header('location: cliente.php');
 }
@@ -64,7 +62,7 @@ if (isset($_POST['alterar'])) {
     $cod = $_POST['cod-cliente'];
     $nome = $_POST['nome'];
     $cpf =  $_POST['cpf'];
-    $updateSql = "update cliente set nome = '$nome', cpf='$cpf' where cod_cliente = $cod";
+    $updateSql = "update cliente set nome = '$nome', cpf='$cpf' where id = $cod";
     $resultado = $pdo->query($updateSql);
     header('location: cliente.php');
 }
@@ -88,27 +86,7 @@ if (isset($_POST['alterar'])) {
 </head>
 
 <body>
-    <!-- <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="img/img1.jpg" class="d-block w-100 img-fluid" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="img/img2.jpg" class="d-block w-100 img-fluid" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="img/img3.jpg" class="d-block w-100 img-fluid" alt="...">
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div> -->
+    
     <section class="formulario">
 
         <div class="card" style="width: 18rem;">
@@ -140,11 +118,11 @@ if (isset($_POST['alterar'])) {
 
                 do { ?>
                 <tr>
-                    <td hidden><?php echo $row['cod_cliente']; ?></td>
+                    <td hidden><?php echo $row['id']; ?></td>
                     <td><?php echo $row['nome']; ?></td>
                     <td><?php echo $row['cpf']; ?></td>
-                    <td><a href="cliente.php?codedit=<?php echo $row['cod_cliente']; ?>">Editar</a></td>
-                    <td><a href="cliente.php?codarq=<?php echo $row['cod_cliente']; ?>">Arquivar</a></td>
+                    <td><a href="cliente.php?codedit=<?php echo $row['id']; ?>">Editar</a></td>
+                    <td><a href="cliente.php?codarq=<?php echo $row['id']; ?>">Arquivar</a></td>
 
                 </tr>
         <?php } while ($row = $lista->fetch());
@@ -159,7 +137,7 @@ if (isset($_POST['alterar'])) {
         <thead>
             <?php
             if ($num_rows_arq > 0) { ?>
-                <th hidden>Cod</th>
+                <th >Cod</th>
                 <th>Nome</th>
                 <th>CPF</th>
                 <th>Arquivado em</th>
@@ -170,12 +148,12 @@ if (isset($_POST['alterar'])) {
 
                 do { ?>
                 <tr>
-                    <td hidden><?php echo $rowArq['cod_cliente']; ?></td>
+                    <td ><?php echo $rowArq['id']; ?></td>
                     <td><?php echo $rowArq['nome']; ?></td>
                     <td><?php echo $rowArq['cpf']; ?></td>
                     <td><?php echo $rowArq['deleted']; ?></td>
-                    <td><a href="cliente.php?codres=<?php echo $rowArq['cod_cliente']; ?>">Restaurar</a></td>
-                    <td><a href="cliente.php?codexc=<?php echo $rowArq['cod_cliente']; ?>">Excluir</a></td>
+                    <td><a href="cliente.php?codres=<?php echo $rowArq['id']; ?>">Restaurar</a></td>
+                    <td><a href="cliente.php?codexc=<?php echo $rowArq['id']; ?>">Excluir</a></td>
 
                 </tr>
         <?php } while ($rowArq = $listaArq->fetch());
